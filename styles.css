@@ -168,6 +168,7 @@ a { color: var(--pink-bright); text-decoration: none; }
   background-size: 300% auto;
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
   animation: hue-shift 6s linear infinite;
   text-shadow: 0 0 40px var(--purple-glow);
