@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Volunteer Your Soul | xXOnlineStatusXx Podcast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <span class="brand"><span class="x">xX</span> <span class="mid">OnlineStatus</span> <span class="x">Xx</span></span>
+  <span class="pill">PODCAST</span>
+</nav>
+<div class="subnav">
+  <a href="index.html">Home</a>
+  <a href="hosts.html">Meet The Hosts</a>
+  <a href="episodes.html">Episodes</a>
+  <a href="guest-signup.html">Be A Guest</a>
+  <a href="volunteer.html" class="active">Volunteer</a>
+</div>
+
+<section class="hero">
+  <h1 class="glow-title">Volunteer Your Soul</h1>
+  <p class="subtitle">Help us build the chaos behind the scenes.</p>
+</section>
+
+<section class="section">
+  <form class="form-wrap purple" action="https://formspree.io/f/xnjenwdj" method="POST">
+    <input type="hidden" name="_subject" value="New Volunteer Signup — xXOnlineStatusXx Podcast">
+
+    <div class="field">
+      <label for="v-name">Name</label>
+      <input type="text" id="v-name" name="name" placeholder="What do we call you?" required>
+    </div>
+
+    <div class="field">
+      <label for="v-discord">Discord Handle</label>
+      <input type="text" id="v-discord" name="discord" placeholder="e.g. shadowbat#1234" required>
+    </div>
+
+    <div class="field">
+      <label for="v-role">Desired Role</label>
+      <select id="v-role" name="role" required>
+        <option value="" disabled selected>Select a role…</option>
+        <option value="Editing">Editing</option>
+        <option value="Moderation">Moderation</option>
+        <option value="Graphic Design">Graphic Design</option>
+        <option value="Social Media">Social Media</option>
+        <option value="Research">Research</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="v-skills">Skills &amp; Experience</label>
+      <textarea id="v-skills" name="skills" rows="4" placeholder="What can you do? Be honest." required></textarea>
+    </div>
+
+    <div class="field">
+      <label for="v-availability">Availability</label>
+      <input type="text" id="v-availability" name="availability" placeholder="Hours per week, timezones, etc." required>
+    </div>
+
+    <button type="submit" class="submit-btn">Submit 🩸</button>
+  </form>
+  <p class="form-note">Submissions go straight to the hosts' inbox via Formspree.</p>
+</section>
+
+<footer>
+  <div class="copyright"><span class="x">xX</span><span class="mid">OnlineStatus</span><span class="x">Xx</span> Podcast © 2026</div>
+  <div class="emoji-row">🦇 💀 ✨</div>
+</footer>
+
+</body>
+</html>

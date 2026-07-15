@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be A Guest | xXOnlineStatusXx Podcast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <span class="brand"><span class="x">xX</span> <span class="mid">OnlineStatus</span> <span class="x">Xx</span></span>
+  <span class="pill">PODCAST</span>
+</nav>
+<div class="subnav">
+  <a href="index.html">Home</a>
+  <a href="hosts.html">Meet The Hosts</a>
+  <a href="episodes.html">Episodes</a>
+  <a href="guest-signup.html" class="active">Be A Guest</a>
+  <a href="volunteer.html">Volunteer</a>
+</div>
+
+<section class="hero">
+  <h1 class="glow-title">Be A Guest</h1>
+  <p class="subtitle">Spill your guts on the xXOnlineStatusXx Podcast.</p>
+</section>
+
+<section class="section">
+  <form class="form-wrap" action="https://formspree.io/f/xnjenwdj" method="POST">
+    <input type="hidden" name="_subject" value="New Guest Signup — xXOnlineStatusXx Podcast">
+
+    <div class="field">
+      <label for="name">What Do We Call You?</label>
+      <input type="text" id="name" name="name" placeholder="Name or Alias" required>
+    </div>
+
+    <div class="field">
+      <label for="discord">Discord Handle</label>
+      <input type="text" id="discord" name="discord" placeholder="e.g. shadowbat#1234" required>
+    </div>
+
+    <div class="field">
+      <label for="why">Why Do You Want To Be On?</label>
+      <textarea id="why" name="why" rows="4" placeholder="Tell us what makes you interesting…" required></textarea>
+    </div>
+
+    <div class="field">
+      <label>Topics You'd Discuss</label>
+      <div class="chip-group">
+        <label class="chip"><input type="checkbox" name="topics" value="Smoking">Smoking</label>
+        <label class="chip"><input type="checkbox" name="topics" value="Music">Music</label>
+        <label class="chip"><input type="checkbox" name="topics" value="Interviews">Interviews</label>
+        <label class="chip"><input type="checkbox" name="topics" value="Server Updates">Server Updates</label>
+        <label class="chip"><input type="checkbox" name="topics" value="Shenanigans">Shenanigans</label>
+        <label class="chip"><input type="checkbox" name="topics" value="Debauchery">Debauchery</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="socials">Social Links (Optional)</label>
+      <input type="text" id="socials" name="socials" placeholder="Instagram, Twitter, etc.">
+    </div>
+
+    <button type="submit" class="submit-btn">Submit Application 💀</button>
+  </form>
+  <p class="form-note">Submissions go straight to the hosts' inbox via Formspree.</p>
+</section>
+
+<footer>
+  <div class="copyright"><span class="x">xX</span><span class="mid">OnlineStatus</span><span class="x">Xx</span> Podcast © 2026</div>
+  <div class="emoji-row">🦇 💀 ✨</div>
+</footer>
+
+</body>
+</html>
