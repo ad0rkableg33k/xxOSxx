@@ -76,7 +76,13 @@
 <footer>
   <div class="copyright"><span class="x">xX</span><span class="mid">OnlineStatus</span><span class="x">Xx</span> Podcast © 2026</div>
   <div class="emoji-row">🦇 💀 ✨</div>
-  <div class="visitor-counter">👁 VISITORS: <span class="digits">004269</span></div>
+  <div class="visitor-counter">👁 VISITORS: <span class="digits" id="visitCounter">······</span></div>
+  <script>
+  fetch('https://countapi.mileshilliard.com/api/v1/hit/g33ky-xxonlinestatusxx-podcast')
+    .then(r => r.json())
+    .then(d => { document.getElementById('visitCounter').textContent = String(d.value).padStart(6,'0'); })
+    .catch(() => { document.getElementById('visitCounter').textContent = '------'; });
+  </script>
   <div class="made-with">best viewed at 1024x768 · powered by chaos</div>
 </footer>
 
