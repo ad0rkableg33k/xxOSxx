@@ -160,6 +160,26 @@ a { color: var(--pink-bright); text-decoration: none; }
   margin: 0 auto;
 }
 
+.hero-banner {
+  max-width: 100%;
+  width: 420px;
+  height: auto;
+  filter: drop-shadow(0 0 30px var(--purple-glow)) drop-shadow(0 0 50px var(--pink-glow));
+  margin-bottom: 0.5rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .glow-title {
   font-family: var(--font-display);
   font-weight: 700;
