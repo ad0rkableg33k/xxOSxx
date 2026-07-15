@@ -237,6 +237,20 @@ a { color: var(--pink-bright); text-decoration: none; }
   margin-bottom: 1.5rem;
 }
 
+.card .avatar-photo {
+  width: 100%;
+  height: 320px;
+  border-radius: 12px;
+  object-fit: cover;
+  object-position: top center;
+  border: 2px solid var(--purple);
+  box-shadow: 0 0 22px var(--purple-glow);
+  margin-bottom: 1.5rem;
+  display: block;
+}
+.card.pink .avatar-photo { border-color: var(--pink); box-shadow: 0 0 22px var(--pink-glow); }
+.card.orange .avatar-photo { border-color: var(--orange); box-shadow: 0 0 22px var(--orange-glow); }
+
 .card .emoji-row { font-size: 1.3rem; margin-top: 1rem; }
 
 .host-name {
