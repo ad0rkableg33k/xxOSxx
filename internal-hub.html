@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>xXOnlineStatusXx — Internal Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!--
+  =====================================================================
+  SETUP REQUIRED BEFORE THIS WORKS LIVE:
+  1. Go to https://console.firebase.google.com
+  2. Create a new free project (any name, e.g. "xxosxx-hub")
+  3. In the project, go to Build > Realtime Database > Create Database
+     - Start in "test mode" for now (we'll tighten rules after — test mode
+       means anyone with the URL can read/write, fine for a private
+       unlisted page among 3 trusted people, but know that going in)
+  4. Go to Project Settings (gear icon) > General > "Your apps" >
+     click the </> (web) icon to register a web app
+  5. Copy the firebaseConfig object it gives you and paste it below,
+     replacing the placeholder object.
+  =====================================================================
+-->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<style>
+  :root {
+    --bg-void: #0a0510;
+    --bg-panel: #150c1f;
+    --bg-panel-2: #1c1129;
+    --hot-pink: #ff2fb0;
+    --purple-glow: #9b4dff;
+    --amber-warm: #d98e2e;
+    --text-soft: #e8d9e6;
+    --text-dim: #9c8aa3;
+    --font-display: 'Cinzel Decorative', serif;
+    --font-heading: 'Cinzel', serif;
+    --font-body: 'Poppins', sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg-void);
+    background-image: radial-gradient(ellipse at top, #1a0d24 0%, #0a0510 60%);
+    color: var(--text-soft);
+    font-family: var(--font-body);
+    padding: 2rem 1rem 4rem;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 {
+    font-family: var(--font-display);
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--hot-pink);
+    text-shadow: 0 0 14px rgba(255,47,176,0.5);
+    margin-bottom: 0.2rem;
+  }
+  .subhead { text-align: center; color: var(--text-dim); font-size: 0.8rem; margin-bottom: 1.5rem; }
+
+  .setup-banner {
+    background: rgba(217,142,46,0.1);
+    border: 1px solid var(--amber-warm);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--text-soft);
+    margin-bottom: 1.5rem;
+    display: none;
+  }
+  .setup-banner.show { display: block; }
+  .setup-banner strong { color: var(--amber-warm); }
+
+  .tabs {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    font-family: var(--font-heading);
+    letter-spacing: 0.05em;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    padding: 0.55rem 1.1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,47,176,0.35);
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tab-btn.active {
+    background: rgba(255,47,176,0.15);
+    color: var(--hot-pink);
+    border-color: var(--hot-pink);
+    box-shadow: 0 0 16px -4px var(--hot-pink);
+  }
+
+  .panel {
+    background: var(--bg-panel);
+    border: 1px solid rgba(255,47,176,0.3);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .row { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
+  label { font-size: 0.8rem; color: var(--text-dim); }
+  input[type="number"], input[type="date"], input[type="text"], textarea, select {
+    background: var(--bg-panel-2);
+    border: 1px solid rgba(255,47,176,0.3);
+    color: var(--text-soft);
+    padding: 0.55rem 0.75rem;
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+  }
+  textarea { width: 100%; resize: vertical; min-height: 80px; }
+
+  button {
+    font-family: var(--font-heading);
+    letter-spacing: 0.05em;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    padding: 0.6rem 1.3rem;
+    border-radius: 999px;
+    border: 1px solid var(--hot-pink);
+    background: rgba(255,47,176,0.1);
+    color: var(--hot-pink);
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+  }
+  button:hover { background: rgba(255,47,176,0.2); box-shadow: 0 0 20px -4px var(--hot-pink); }
+  button.ghost { border-color: var(--text-dim); color: var(--text-dim); background: transparent; font-size: 0.7rem; padding: 0.35rem 0.9rem; }
+  button.ghost:hover { box-shadow: 0 0 14px -4px var(--text-dim); border-color: var(--text-soft); color: var(--text-soft); }
+  button.save { border-color: var(--amber-warm); color: var(--amber-warm); }
+  button.save:hover { box-shadow: 0 0 20px -4px var(--amber-warm); }
+
+  .host-block { border-left: 3px solid var(--host-accent); padding-left: 1rem; margin-bottom: 1.2rem; }
+  .host-block:last-child { margin-bottom: 0; }
+  .host-title { font-family: var(--font-heading); font-size: 0.95rem; color: var(--host-accent); margin: 0 0 0.5rem; }
+  .segment-pick {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 0.6rem;
+    background: var(--bg-panel-2); border: 1px solid color-mix(in srgb, var(--host-accent) 40%, transparent);
+    border-radius: 8px; padding: 0.5rem 0.8rem; margin-bottom: 0.5rem; font-size: 0.82rem;
+  }
+  .segment-pick:last-child { margin-bottom: 0; }
+  .segment-pick .segment-buttons { flex-shrink: 0; display: flex; gap: 0.4rem; margin-top: 0.1rem; }
+  .segment-desc {
+    font-size: 0.72rem;
+    line-height: 1.4;
+    color: var(--text-dim);
+    margin: 0.15rem 0 0;
+  }
+
+  .eyebrow { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--purple-glow); margin-bottom: 1rem; }
+
+  .status-msg { text-align: center; font-size: 0.78rem; color: var(--text-dim); min-height: 1.2rem; margin-top: -0.5rem; margin-bottom: 1rem; }
+  .empty-note { color: var(--text-dim); font-size: 0.8rem; text-align: center; padding: 1rem 0; }
+
+  /* Chat */
+  .chat-log { max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1rem; padding-right: 4px; }
+  .chat-msg { background: var(--bg-panel-2); border-radius: 10px; padding: 0.6rem 0.9rem; font-size: 0.85rem; max-width: 85%; }
+  .chat-msg .author { font-family: var(--font-heading); font-size: 0.72rem; letter-spacing: 0.05em; margin-bottom: 0.15rem; }
+  .chat-msg .time { font-size: 0.65rem; color: var(--text-dim); margin-left: 0.4rem; }
+  .chat-input-row { display: flex; gap: 0.5rem; }
+  .chat-input-row input[type="text"] { flex: 1; }
+
+  /* Schedule */
+  .episode-card {
+    background: var(--bg-panel-2);
+    border: 1px solid rgba(155,77,255,0.3);
+    border-radius: 12px;
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 1rem;
+  }
+  .episode-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+  .episode-num { font-family: var(--font-heading); color: var(--hot-pink); font-size: 1rem; }
+  .episode-date { font-size: 0.72rem; color: var(--text-dim); }
+  .episode-storyline { font-size: 0.85rem; line-height: 1.5; margin: 0.4rem 0; white-space: pre-wrap; }
+  .episode-lineup span {
+    display: inline-block; margin: 0.15rem 0.3rem 0.15rem 0; padding: 0.2rem 0.6rem;
+    border-radius: 999px; font-size: 0.7rem; border: 1px solid var(--purple-glow);
+  }
+</style>
+</head>
+<body>
+
+<!-- PASSPHRASE GATE — set HUB_PASSPHRASE below in the script -->
+<div id="gateOverlay" style="position:fixed; inset:0; background:#0a0510; display:flex; align-items:center; justify-content:center; z-index:999; padding:1rem;">
+  <div style="background:#150c1f; border:1px solid rgba(255,47,176,0.4); border-radius:14px; padding:2rem; max-width:320px; width:100%; text-align:center; box-shadow:0 0 40px -10px rgba(255,47,176,0.5);">
+    <p style="font-family:'Cinzel Decorative',serif; color:#ff2fb0; font-size:1.1rem; margin:0 0 0.5rem; text-shadow:0 0 12px rgba(255,47,176,0.5);">🔒 Internal Hub</p>
+    <p style="color:#9c8aa3; font-size:0.78rem; margin:0 0 1.2rem;">bat / dragon / intox only — enter the passphrase</p>
+    <input type="password" id="gatePassInput" placeholder="passphrase" autofocus style="width:100%; background:#1c1129; border:1px solid rgba(255,47,176,0.3); color:#e8d9e6; padding:0.6rem 0.8rem; border-radius:8px; font-family:'Poppins',sans-serif; font-size:0.85rem; margin-bottom:0.8rem; box-sizing:border-box;">
+    <button id="gateSubmitBtn" style="width:100%; font-family:'Cinzel',serif; letter-spacing:0.05em; font-size:0.8rem; text-transform:uppercase; padding:0.6rem 1.3rem; border-radius:999px; border:1px solid #ff2fb0; background:rgba(255,47,176,0.1); color:#ff2fb0; cursor:pointer;">Enter</button>
+    <p id="gateError" style="color:#ff2fb0; font-size:0.72rem; margin-top:0.8rem; min-height:1rem;"></p>
+  </div>
+</div>
+
+<div class="wrap" id="mainWrap" style="display:none;">
+  <h1>Internal Hub</h1>
+  <p class="subhead">lineup randomizer · chat · schedule &amp; storyline —  bat / dragon / intox / guest only</p>
+
+  <div class="setup-banner" id="setupBanner">
+    <strong>⚠ Firebase not connected yet.</strong> This page is running in
+    local-preview mode — rolls/saves/chat/schedule won't sync between
+    people until a real Firebase config is added to the script at the
+    top of this file. See the HTML comment above the &lt;script&gt; tags
+    for setup steps.
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="randomizer">🎲 Randomizer</button>
+    <button class="tab-btn" data-tab="chat">💬 Chat</button>
+    <button class="tab-btn" data-tab="schedule">📖 Schedule &amp; Storyline</button>
+  </div>
+
+  <!-- RANDOMIZER TAB -->
+  <div class="tab-content active" id="tab-randomizer">
+    <div class="panel">
+      <div class="row">
+        <label>Episode #</label>
+        <input type="number" id="epNumber" min="1" value="1" style="width:80px;">
+        <label>Date</label>
+        <input type="date" id="epDate">
+      </div>
+      <p style="font-size:0.72rem; color:var(--text-dim); margin:-0.4rem 0 0.8rem;">Random pulls: BabyyBAT &amp; Drag0n get 2 each · The Intoxicologist gets 1</p>
+      <div class="row">
+        <button id="rollBtn">🎲 Roll New Lineup</button>
+        <button id="saveBtn" class="save">💾 Save This Lineup</button>
+      </div>
+      <div class="status-msg" id="statusMsg"></div>
+      <div id="lineupDisplay"></div>
+    </div>
+
+    <div class="panel">
+      <div class="eyebrow">Episode Lineup History</div>
+      <div id="historyList"><p class="empty-note">Loading…</p></div>
+    </div>
+  </div>
+
+  <!-- CHAT TAB -->
+  <div class="tab-content" id="tab-chat">
+    <div class="panel">
+      <div class="row">
+        <label>You are:</label>
+        <select id="chatAuthor">
+          <option value="Dragon">Dragon</option>
+          <option value="BabyyBAT">BabyyBAT</option>
+          <option value="Intoxicologist">The Intoxicologist</option>
+          <option value="guest">Guest</option>
+        </select>
+      </div>
+      <div class="chat-log" id="chatLog"><p class="empty-note">Loading messages…</p></div>
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="say something unhinged…">
+        <button id="chatSendBtn">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCHEDULE / STORYLINE TAB -->
+  <div class="tab-content" id="tab-schedule">
+    <div class="panel">
+      <div class="eyebrow">Add / Update Episode Entry</div>
+      <div class="row">
+        <label>Episode #</label>
+        <input type="number" id="schedEpNum" min="1" style="width:80px;">
+        <label>Air Date</label>
+        <input type="date" id="schedDate">
+      </div>
+      <label>Storyline / Rundown Notes</label>
+      <textarea id="schedNotes" placeholder="Episode theme, talking points, arc notes, running bits to reference..."></textarea>
+      <div class="row" style="margin-top:0.8rem;">
+        <button id="schedSaveBtn" class="save">💾 Save Episode Entry</button>
+      </div>
+      <div class="status-msg" id="schedStatus"></div>
+    </div>
+
+    <div class="panel">
+      <div class="eyebrow">Full Schedule</div>
+      <div id="scheduleList"><p class="empty-note">Loading schedule…</p></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* =====================================================================
+   REPLACE THIS with your real Firebase config from the console
+   ===================================================================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyBeXhqCao7M-IEVLVo6_pDoPV45WXjg-04",
+  authDomain: "xxosxx-admin.firebaseapp.com",
+  databaseURL: "https://xxosxx-admin-default-rtdb.firebaseio.com",
+  projectId: "xxosxx-admin",
+  storageBucket: "xxosxx-admin.firebasestorage.app",
+  messagingSenderId: "58924859968",
+  appId: "1:58924859968:web:f4347ab716d0e11e6155a5",
+  measurementId: "G-X8GLB82KGF"
+};
+
+/* Change this to whatever passphrase you three agree on.
+   This is a friction gate, not real security — the real protection
+   is the Firebase Realtime Database rules (must require auth != null)
+   plus Anonymous Auth being enabled in the Firebase console.
+
+   TO ACTUALLY LOCK THE DATABASE DOWN (do this once):
+   1. console.firebase.google.com → your project → Build → Authentication
+      → Sign-in method → enable "Anonymous"
+   2. Build → Realtime Database → Rules tab → replace with:
+        {
+          "rules": {
+            ".read": "auth != null",
+            ".write": "auth != null"
+          }
+        }
+      → click Publish
+   Until you do both of those, the database is still in test mode
+   (open to anyone with the URL) even with the passphrase gate below. */
+const HUB_PASSPHRASE = "123!456?";
+
+let db = null;
+let firebaseReady = false;
+
+try {
+  if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+    firebaseReady = true;
+  }
+} catch (e) {
+  console.error("Firebase init failed:", e);
+}
+
+if (!firebaseReady) {
+  document.getElementById('setupBanner').classList.add('show');
+}
+
+/* ---------------- GATE ---------------- */
+function unlockGate() {
+  const input = document.getElementById('gatePassInput');
+  const errorEl = document.getElementById('gateError');
+  if (input.value !== HUB_PASSPHRASE) {
+    errorEl.textContent = 'wrong passphrase — try again';
+    input.value = '';
+    input.focus();
+    return;
+  }
+  document.getElementById('gateOverlay').style.display = 'none';
+  document.getElementById('mainWrap').style.display = 'block';
+
+  if (!firebaseReady) { startApp(); return; }
+
+  firebase.auth().signInAnonymously()
+    .then(() => startApp())
+    .catch(err => {
+      document.getElementById('statusMsg') && (document.getElementById('statusMsg').textContent = 'Auth error: ' + err.message);
+      startApp(); // still start UI so setup banner / errors are visible
+    });
+}
+
+document.getElementById('gateSubmitBtn').addEventListener('click', unlockGate);
+document.getElementById('gatePassInput').addEventListener('keydown', e => { if (e.key === 'Enter') unlockGate(); });
+
+function startApp() {
+  listenLineupHistory();
+  initChat();
+  listenSchedule();
+}
+
+/* ---------------- TABS ---------------- */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---------------- RANDOMIZER ---------------- */
+const SEGMENTS = {
+  bat: { label: "BabyyBATxoxo", accent: "#9b4dff", list: [
+    ["Bat Signal Reading", "A tarot pull themed around a listener's burning question, delivered with zero sugarcoating."],
+    ["Cursed or Blessed", "Quick-pull tarot verdict on random topics — an ex, a trend, a life choice."],
+    ["Bat's Basement Tape", "Deep-cut music recs and underrated artist spotlight."],
+    ["Lyric Roulette", "A music-trivia, lyric-guessing game segment."],
+    ["Chaos Console", "Bat and a guest play a quick game live on air."],
+    ["Boss Bat", "A competitive mini-game segment where Bat challenges a co-host or guest."],
+    ["Smoke Show", "A vape/smoke trick showdown, scored live by the other hosts."],
+    ["Track & Tarot", "Pulls a card, then picks a song that matches the card's vibe."]
+  ]},
+  dragon: { label: "Drag0n", accent: "#ff2fb0", list: [
+    ["Feral Hour", "Unfiltered rants, no topic off limits, pure stream-of-consciousness chaos."],
+    ["Say It With Your Chest", "A hot-seat segment where Dragon says the thing nobody else will."],
+    ["Dragon's Hoard", "A confessions vault where listeners submit their most unhinged secrets anonymously."],
+    ["Scorched Earth", "Rapid-fire 'keep it or burn it' opinions on trends, exes, and discourse."],
+    ["Ashes to Asks", "Reads community-submitted questions and dares live."],
+    ["Dragon's Den", "A mini roast segment for guests."],
+    ["Pick Your Poison", "Dragon picks between two chaotic options live — a drink, a dare, a topic."]
+  ]},
+  intox: { label: "The Intoxicologist", accent: "#d98e2e", list: [
+    ["The Intoxicologist's Pour", "A featured cocktail segment — crafted live, with the 'why' behind every ingredient choice."],
+    ["The Intoxicologist's Reading", "A tarot pull paired with the cocktail of the episode, tying the card's meaning to what's being poured."],
+    ["Last Call", "The closing segment — final thoughts, a parting toast, and whatever wisdom he's decided to drop on the way out."],
+    ["Cocktail Chemistry", "A technical deep-dive into the craft — the science of getting fancy-drunk."],
+    ["Sunset Sessions", "A mellower, wind-down segment with slower pacing and moodier picks."]
+  ]}
+};
+
+/* Each host's fixed anchor segment — always in the lineup, never rerolled */
+const STATIC_SEGMENTS = {
+  bat: "Bat Signal Reading",
+  dragon: "Dragon's Hoard",
+  intox: "Last Call"
+};
+
+/* How many random (non-static) segments each host gets per episode */
+const RANDOM_COUNTS = {
+  bat: 2,
+  dragon: 2,
+  intox: 1
+};
+
+let currentLineup = null;
+
+function pickRandom(arr, n) {
+  const copy = [...arr]; const picked = []; n = Math.min(n, copy.length);
+  for (let i = 0; i < n; i++) { const idx = Math.floor(Math.random() * copy.length); picked.push(copy.splice(idx, 1)[0]); }
+  return picked;
+}
+
+function rollLineup() {
+  const lineup = {};
+  for (const key in SEGMENTS) {
+    const staticName = STATIC_SEGMENTS[key];
+    const staticEntry = SEGMENTS[key].list.find(s => s[0] === staticName);
+    const pool = SEGMENTS[key].list.filter(s => s[0] !== staticName);
+    const randoms = pickRandom(pool, RANDOM_COUNTS[key]);
+    lineup[key] = [
+      { name: staticEntry[0], desc: staticEntry[1], static: true, skipped: false },
+      ...randoms.map(([name, desc]) => ({ name, desc, static: false, skipped: false }))
+    ];
+  }
+  currentLineup = lineup;
+  renderLineup(lineup);
+  document.getElementById('statusMsg').textContent = 'Rolled — not saved yet.';
+}
+
+function renderLineup(lineup) {
+  const el = document.getElementById('lineupDisplay');
+  let html = '';
+  for (const key in SEGMENTS) {
+    const host = SEGMENTS[key];
+    html += `<div class="host-block" style="--host-accent:${host.accent}"><p class="host-title">${host.label}</p>`;
+    lineup[key].forEach((seg, idx) => {
+      const skippedStyle = seg.skipped ? 'text-decoration:line-through; opacity:0.5;' : '';
+      html += `<div class="segment-pick">
+        <span style="${skippedStyle}">
+          <strong>${seg.name}</strong>${seg.static ? ' <em style="opacity:0.6; font-size:0.7em;">(static)</em>' : ''}
+          <p class="segment-desc">${seg.desc}</p>
+        </span>
+        <span class="segment-buttons">
+          ${!seg.static ? `<button class="ghost" onclick="rerollOne('${key}', ${idx})">reroll</button>` : ''}
+          <button class="ghost" onclick="toggleSkip('${key}', ${idx})">${seg.skipped ? 'unskip' : 'skip'}</button>
+        </span>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+  el.innerHTML = html;
+}
+
+function rerollOne(hostKey, idx) {
+  if (!currentLineup) return;
+  if (currentLineup[hostKey][idx].static) return; // static segment can't be rerolled
+  const staticName = STATIC_SEGMENTS[hostKey];
+  const used = currentLineup[hostKey].map(s => s.name);
+  const available = SEGMENTS[hostKey].list.filter(s => s[0] !== staticName && (!used.includes(s[0]) || s[0] === currentLineup[hostKey][idx].name));
+  const pool = available.length ? available : SEGMENTS[hostKey].list.filter(s => s[0] !== staticName);
+  const [name, desc] = pickRandom(pool, 1)[0];
+  currentLineup[hostKey][idx] = { name, desc, static: false, skipped: currentLineup[hostKey][idx].skipped };
+  renderLineup(currentLineup);
+  document.getElementById('statusMsg').textContent = 'Rerolled — not saved yet.';
+}
+
+function toggleSkip(hostKey, idx) {
+  if (!currentLineup) return;
+  currentLineup[hostKey][idx].skipped = !currentLineup[hostKey][idx].skipped;
+  renderLineup(currentLineup);
+  document.getElementById('statusMsg').textContent = 'Updated — not saved yet.';
+}
+
+async function saveLineup() {
+  if (!currentLineup) { document.getElementById('statusMsg').textContent = 'Roll a lineup first!'; return; }
+  const epNum = document.getElementById('epNumber').value;
+  const epDate = document.getElementById('epDate').value;
+  if (!epNum) { document.getElementById('statusMsg').textContent = 'Enter an episode number first.'; return; }
+  if (!firebaseReady) { document.getElementById('statusMsg').textContent = 'Firebase not connected — see setup banner above.'; return; }
+  try {
+    await db.ref('episodes/' + epNum + '/lineup').set(currentLineup);
+    await db.ref('episodes/' + epNum + '/date').set(epDate);
+    document.getElementById('statusMsg').textContent = `Saved episode #${epNum} ✨`;
+  } catch (e) {
+    document.getElementById('statusMsg').textContent = 'Save error: ' + e.message;
+  }
+}
+
+function listenLineupHistory() {
+  const el = document.getElementById('historyList');
+  if (!firebaseReady) { el.innerHTML = '<p class="empty-note">Connect Firebase to see saved lineups here.</p>'; return; }
+  db.ref('episodes').on('value', snap => {
+    const data = snap.val();
+    if (!data) { el.innerHTML = '<p class="empty-note">No episodes saved yet.</p>'; return; }
+    const nums = Object.keys(data).sort((a,b) => parseInt(a)-parseInt(b));
+    let html = '';
+    nums.forEach(num => {
+      const rec = data[num];
+      if (!rec.lineup) return;
+      html += `<div class="episode-card"><div class="episode-header"><span class="episode-num">Episode #${num}</span><span class="episode-date">${rec.date || 'no date'}</span></div><div class="episode-lineup">`;
+      for (const key in SEGMENTS) {
+        (rec.lineup[key] || []).forEach(seg => {
+          const label = seg.name + (seg.static ? ' ★' : '') + (seg.skipped ? ' (skipped)' : '');
+          const style = seg.skipped ? `border-color:${SEGMENTS[key].accent}; opacity:0.5; text-decoration:line-through;` : `border-color:${SEGMENTS[key].accent};`;
+          html += `<span style="${style}" title="${(seg.desc || '').replace(/"/g, '&quot;')}">${label}</span>`;
+        });
+      }
+      html += `</div></div>`;
+    });
+    el.innerHTML = html || '<p class="empty-note">No episodes saved yet.</p>';
+  });
+}
+
+document.getElementById('rollBtn').addEventListener('click', rollLineup);
+document.getElementById('saveBtn').addEventListener('click', saveLineup);
+document.getElementById('epDate').valueAsDate = new Date();
+
+/* ---------------- CHAT ---------------- */
+function initChat() {
+  const log = document.getElementById('chatLog');
+  if (!firebaseReady) { log.innerHTML = '<p class="empty-note">Connect Firebase to enable chat.</p>'; return; }
+  db.ref('chat').limitToLast(100).on('value', snap => {
+    const data = snap.val();
+    if (!data) { log.innerHTML = '<p class="empty-note">No messages yet — say hi!</p>'; return; }
+    const msgs = Object.values(data).sort((a,b) => a.timestamp - b.timestamp);
+    log.innerHTML = msgs.map(m => `
+      <div class="chat-msg">
+        <div class="author" style="color:${authorColor(m.author)}">${m.author} <span class="time">${new Date(m.timestamp).toLocaleString()}</span></div>
+        <div>${escapeHtml(m.text)}</div>
+      </div>
+    `).join('');
+    log.scrollTop = log.scrollHeight;
+  });
+}
+
+function authorColor(name) {
+  if (name === 'Dragon') return '#ff2fb0';
+  if (name === 'BabyyBAT') return '#9b4dff';
+  if (name === 'Intoxicologist') return '#d98e2e';
+  return '#e8d9e6';
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  if (!firebaseReady) return;
+  const author = document.getElementById('chatAuthor').value;
+  await db.ref('chat').push({ author, text, timestamp: Date.now() });
+  input.value = '';
+}
+
+document.getElementById('chatSendBtn').addEventListener('click', sendChat);
+document.getElementById('chatInput').addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
+
+/* ---------------- SCHEDULE / STORYLINE ---------------- */
+async function saveSchedule() {
+  const num = document.getElementById('schedEpNum').value;
+  const date = document.getElementById('schedDate').value;
+  const notes = document.getElementById('schedNotes').value;
+  const statusEl = document.getElementById('schedStatus');
+  if (!num) { statusEl.textContent = 'Enter an episode number first.'; return; }
+  if (!firebaseReady) { statusEl.textContent = 'Firebase not connected — see setup banner above.'; return; }
+  try {
+    await db.ref('episodes/' + num + '/date').set(date);
+    await db.ref('episodes/' + num + '/storyline').set(notes);
+    statusEl.textContent = `Saved episode #${num} storyline ✨`;
+  } catch (e) {
+    statusEl.textContent = 'Save error: ' + e.message;
+  }
+}
+
+function listenSchedule() {
+  const el = document.getElementById('scheduleList');
+  if (!firebaseReady) { el.innerHTML = '<p class="empty-note">Connect Firebase to see the schedule here.</p>'; return; }
+  db.ref('episodes').on('value', snap => {
+    const data = snap.val();
+    if (!data) { el.innerHTML = '<p class="empty-note">No episodes scheduled yet.</p>'; return; }
+    const nums = Object.keys(data).sort((a,b) => parseInt(a)-parseInt(b));
+    let html = '';
+    nums.forEach(num => {
+      const rec = data[num];
+      html += `<div class="episode-card">
+        <div class="episode-header"><span class="episode-num">Episode #${num}</span><span class="episode-date">${rec.date || 'no date'}</span></div>
+        ${rec.storyline ? `<div class="episode-storyline">${escapeHtml(rec.storyline)}</div>` : '<p class="empty-note" style="padding:0.2rem 0;">No storyline notes yet.</p>'}
+        ${rec.lineup ? `<div class="episode-lineup">${Object.keys(SEGMENTS).map(key => (rec.lineup[key]||[]).map(seg => {
+          const label = seg.name + (seg.static ? ' ★' : '') + (seg.skipped ? ' (skipped)' : '');
+          const style = seg.skipped ? `border-color:${SEGMENTS[key].accent}; opacity:0.5; text-decoration:line-through;` : `border-color:${SEGMENTS[key].accent};`;
+          const tip = (seg.desc || '').replace(/"/g, '&quot;');
+          return `<span style="${style}" title="${tip}">${label}</span>`;
+        }).join('')).join('')}</div>` : ''}
+      </div>`;
+    });
+    el.innerHTML = html;
+  });
+}
+
+document.getElementById('schedSaveBtn').addEventListener('click', saveSchedule);
+document.getElementById('schedDate').valueAsDate = new Date();
+</script>
+</body>
+</html>
