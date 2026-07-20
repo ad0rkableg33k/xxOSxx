@@ -7,8 +7,52 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@600;700&family=Great+Vibes&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<style>
+  .floaters { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+  .floaters span {
+    position: absolute;
+    bottom: -10%;
+    opacity: 0;
+    animation: floatUp linear infinite;
+    filter: drop-shadow(0 0 6px rgba(255,47,176,0.35));
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+    8%   { opacity: 0.55; }
+    92%  { opacity: 0.5; }
+    100% { transform: translateY(-115vh) rotate(360deg); opacity: 0; }
+  }
+  @media (max-width: 600px) {
+    .floaters span { filter: drop-shadow(0 0 4px rgba(255,47,176,0.3)); }
+  }
+
+  /* Ticker speed override — slows the marquee down */
+  .ticker {
+    animation: tickerScrollSlow 55s linear infinite !important;
+  }
+  @keyframes tickerScrollSlow {
+    from { transform: translateX(100%); }
+    to   { transform: translateX(-100%); }
+  }
+</style>
+
 </head>
 <body>
+<div class="floaters" aria-hidden="true">
+  <span style="left:4%;  font-size:1.4rem; animation-duration:16s; animation-delay:0s;">🦇</span>
+  <span style="left:12%; font-size:1.1rem; animation-duration:21s; animation-delay:2s;">💀</span>
+  <span style="left:20%; font-size:1.3rem; animation-duration:18s; animation-delay:5s;">🍸</span>
+  <span style="left:29%; font-size:1.0rem; animation-duration:24s; animation-delay:1s;">🔥</span>
+  <span style="left:37%; font-size:1.5rem; animation-duration:19s; animation-delay:7s;">🦇</span>
+  <span style="left:46%; font-size:1.2rem; animation-duration:23s; animation-delay:3s;">💀</span>
+  <span style="left:55%; font-size:1.1rem; animation-duration:17s; animation-delay:9s;">🍸</span>
+  <span style="left:63%; font-size:1.4rem; animation-duration:22s; animation-delay:4s;">🔥</span>
+  <span style="left:71%; font-size:1.0rem; animation-duration:20s; animation-delay:6s;">🦇</span>
+  <span style="left:80%; font-size:1.3rem; animation-duration:25s; animation-delay:0.5s;">💀</span>
+  <span style="left:88%; font-size:1.2rem; animation-duration:18s; animation-delay:8s;">🍸</span>
+  <span style="left:95%; font-size:1.1rem; animation-duration:21s; animation-delay:2.5s;">🔥</span>
+</div>
+
 
 <nav class="site-nav">
   <span class="brand"><span class="x">xX</span> <span class="mid">OnlineStatus</span> <span class="x">Xx</span></span>

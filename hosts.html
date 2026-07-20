@@ -7,8 +7,89 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@600;700&family=Great+Vibes&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<style>
+  .floaters { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+  .floaters span {
+    position: absolute;
+    bottom: -10%;
+    opacity: 0;
+    animation: floatUp linear infinite;
+    filter: drop-shadow(0 0 6px rgba(255,47,176,0.35));
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+    8%   { opacity: 0.55; }
+    92%  { opacity: 0.5; }
+    100% { transform: translateY(-115vh) rotate(360deg); opacity: 0; }
+  }
+  @media (max-width: 600px) {
+    .floaters span { filter: drop-shadow(0 0 4px rgba(255,47,176,0.3)); }
+  }
+
+  /* Segment accordion */
+  .segment-acc-list { display: flex; flex-direction: column; gap: 0.4rem; }
+  details.segment-acc {
+    background: rgba(0,0,0,0.15);
+    border: 1px solid currentColor;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  details.segment-acc summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 0.5rem 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.82rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+  details.segment-acc summary::-webkit-details-marker { display: none; }
+  details.segment-acc summary::after {
+    content: '+';
+    opacity: 0.6;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  details.segment-acc[open] summary::after { content: '–'; }
+  details.segment-acc .segment-acc-desc {
+    padding: 0 0.8rem 0.7rem;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+  @media (hover: hover) {
+    details.segment-acc summary:hover { background: rgba(255,255,255,0.05); }
+  }
+
+  /* Ticker speed override — slows the marquee down */
+  .ticker {
+    animation: tickerScrollSlow 55s linear infinite !important;
+  }
+  @keyframes tickerScrollSlow {
+    from { transform: translateX(100%); }
+    to   { transform: translateX(-100%); }
+  }
+</style>
+
 </head>
 <body>
+<div class="floaters" aria-hidden="true">
+  <span style="left:4%;  font-size:1.4rem; animation-duration:16s; animation-delay:0s;">🦇</span>
+  <span style="left:12%; font-size:1.1rem; animation-duration:21s; animation-delay:2s;">💀</span>
+  <span style="left:20%; font-size:1.3rem; animation-duration:18s; animation-delay:5s;">🍸</span>
+  <span style="left:29%; font-size:1.0rem; animation-duration:24s; animation-delay:1s;">🔥</span>
+  <span style="left:37%; font-size:1.5rem; animation-duration:19s; animation-delay:7s;">🦇</span>
+  <span style="left:46%; font-size:1.2rem; animation-duration:23s; animation-delay:3s;">💀</span>
+  <span style="left:55%; font-size:1.1rem; animation-duration:17s; animation-delay:9s;">🍸</span>
+  <span style="left:63%; font-size:1.4rem; animation-duration:22s; animation-delay:4s;">🔥</span>
+  <span style="left:71%; font-size:1.0rem; animation-duration:20s; animation-delay:6s;">🦇</span>
+  <span style="left:80%; font-size:1.3rem; animation-duration:25s; animation-delay:0.5s;">💀</span>
+  <span style="left:88%; font-size:1.2rem; animation-duration:18s; animation-delay:8s;">🍸</span>
+  <span style="left:95%; font-size:1.1rem; animation-duration:21s; animation-delay:2.5s;">🔥</span>
+</div>
+
 
 <nav class="site-nav">
   <span class="brand"><span class="x">xX</span> <span class="mid">OnlineStatus</span> <span class="x">Xx</span></span>
@@ -42,18 +123,42 @@
     <div class="host-quote purple">"Besties. Babes. Bat Shit."</div>
     <p class="host-bio">The goth girl of your nightmares. Armed with neon purple aesthetics, undeniable charisma, and a complete lack of a filter.</p>
     <div class="eyebrow" style="margin-top:1.2rem;">Signature Segment</div>
-    <div class="tag-row">
-      <span class="tag" style="font-weight:600;" title="A tarot pull themed around a listener's burning question, delivered with zero sugarcoating.">★ Bat Signal Reading</span>
+    <div class="segment-acc-list">
+      <details class="segment-acc">
+        <summary style="font-weight:600;" title="A tarot pull themed around a listener's burning question, delivered with zero sugarcoating.">★ Bat Signal Reading</summary>
+        <p class="segment-acc-desc">A tarot pull themed around a listener's burning question, delivered with zero sugarcoating.</p>
+      </details>
     </div>
     <div class="eyebrow" style="margin-top:0.8rem; font-size:0.65rem; opacity:0.6;">Plus 2 Random Pulls From:</div>
-    <div class="tag-row">
-      <span class="tag" title="Quick-pull tarot verdict on random topics — an ex, a trend, a life choice.">Cursed or Blessed</span>
-      <span class="tag" title="Deep-cut music recs and underrated artist spotlight.">Bat's Basement Tape</span>
-      <span class="tag" title="A music-trivia, lyric-guessing game segment.">Lyric Roulette</span>
-      <span class="tag" title="Bat and a guest play a quick game live on air.">Chaos Console</span>
-      <span class="tag" title="A competitive mini-game segment where Bat challenges a co-host or guest.">Boss Bat</span>
-      <span class="tag" title="A vape/smoke trick showdown, scored live by the other hosts.">Smoke Show</span>
-      <span class="tag" title="Pulls a card, then picks a song that matches the card's vibe.">Track &amp; Tarot</span>
+    <div class="segment-acc-list">
+      <details class="segment-acc">
+        <summary title="Quick-pull tarot verdict on random topics — an ex, a trend, a life choice.">Cursed or Blessed</summary>
+        <p class="segment-acc-desc">Quick-pull tarot verdict on random topics — an ex, a trend, a life choice.</p>
+      </details>
+      <details class="segment-acc">
+        <summary title="Deep-cut music recs and underrated artist spotlight.">Bat's Basement Tape</summary>
+        <p class="segment-acc-desc">Deep-cut music recs and underrated artist spotlight.</p>
+      </details>
+      <details class="segment-acc">
+        <summary title="A music-trivia, lyric-guessing game segment.">Lyric Roulette</summary>
+        <p class="segment-acc-desc">A music-trivia, lyric-guessing game segment.</p>
+      </details>
+      <details class="segment-acc">
+        <summary title="Bat and a guest play a quick game live on air.">Chaos Console</summary>
+        <p class="segment-acc-desc">Bat and a guest play a quick game live on air.</p>
+      </details>
+      <details class="segment-acc">
+        <summary title="A competitive mini-game segment where Bat challenges a co-host or guest.">Boss Bat</summary>
+        <p class="segment-acc-desc">A competitive mini-game segment where Bat challenges a co-host or guest.</p>
+      </details>
+      <details class="segment-acc">
+        <summary title="A vape/smoke trick showdown, scored live by the other hosts.">Smoke Show</summary>
+        <p class="segment-acc-desc">A vape/smoke trick showdown, scored live by the other hosts.</p>
+      </details>
+      <details class="segment-acc">
+        <summary title="Pulls a card, then picks a song that matches the card's vibe.">Track &amp; Tarot</summary>
+        <p class="segment-acc-desc">Pulls a card, then picks a song that matches the card's vibe.</p>
+      </details>
 </div>
 <div class="Email" style="margin-top:1.2rem; font-size:1rem; opacity:0.6;"><a href="mailto:babyybat.exe@atomicmail.io">★ Email BabyyBat! ★</a></div>
 </div>
@@ -65,17 +170,38 @@
     <div class="host-quote pink">"Burn it all down and dance in the ashes."</div>
     <p class="host-bio">Hot pink hair, geeky & tech vibes and a dragon's soul. Brings the raw, unhinged energy that keeps the podcast teetering on the edge of sanity.</p>
     <div class="eyebrow" style="margin-top:1.2rem;">Signature Segment</div>
-    <div class="tag-row">
-      <span class="tag" style="font-weight:600;" title="A confessions vault where listeners submit their most unhinged secrets anonymously.">★ Dragon's Hoard</span>
+    <div class="segment-acc-list">
+      <details class="segment-acc">
+        <summary style="font-weight:600;" title="A confessions vault where listeners submit their most unhinged secrets anonymously.">★ Dragon's Hoard</summary>
+        <p class="segment-acc-desc">A confessions vault where listeners submit their most unhinged secrets anonymously.</p>
+      </details>
     </div>
     <div class="eyebrow" style="margin-top:0.8rem; font-size:0.65rem; opacity:0.6;">Plus 2 Random Pulls From:</div>
-    <div class="tag-row">
-      <span class="tag" title="Unfiltered rants, no topic off limits, pure stream-of-consciousness chaos.">Feral Hour</span>
-      <span class="tag" title="A hot-seat segment where Dragon says the thing nobody else will.">Say It With Your Chest</span>
-      <span class="tag" title="Rapid-fire &quot;keep it or burn it&quot; opinions on trends, exes, and discourse.">Scorched Earth</span>
-      <span class="tag" title="Reads community-submitted questions and dares live.">Ashes to Asks</span>
-      <span class="tag" title="A mini roast segment for guests.">Dragon's Den</span>
-      <span class="tag" title="Dragon picks between two chaotic options live — a drink, a dare, a topic.">Pick Your Poison</span>
+    <div class="segment-acc-list">
+      <details class="segment-acc">
+        <summary title="Unfiltered rants, no topic off limits, pure stream-of-consciousness chaos.">Feral Hour</summary>
+        <p class="segment-acc-desc">Unfiltered rants, no topic off limits, pure stream-of-consciousness chaos.</p>
+      </details>
+      <details class="segment-acc">
+        <summary title="A hot-seat segment where Dragon says the thing nobody else will.">Say It With Your Chest</summary>
+        <p class="segment-acc-desc">A hot-seat segment where Dragon says the thing nobody else will.</p>
+      </details>
+      <details class="segment-acc">
+        <summary title="Rapid-fire &quot;keep it or burn it&quot; opinions on trends, exes, and discourse.">Scorched Earth</summary>
+        <p class="segment-acc-desc">Rapid-fire "keep it or burn it" opinions on trends, exes, and discourse.</p>
+      </details>
+      <details class="segment-acc">
+        <summary title="Reads community-submitted questions and dares live.">Ashes to Asks</summary>
+        <p class="segment-acc-desc">Reads community-submitted questions and dares live.</p>
+      </details>
+      <details class="segment-acc">
+        <summary title="A mini roast segment for guests.">Dragon's Den</summary>
+        <p class="segment-acc-desc">A mini roast segment for guests.</p>
+      </details>
+      <details class="segment-acc">
+        <summary title="Dragon picks between two chaotic options live — a drink, a dare, a topic.">Pick Your Poison</summary>
+        <p class="segment-acc-desc">Dragon picks between two chaotic options live — a drink, a dare, a topic.</p>
+      </details>
 </div>
 <div class="Email" style="margin-top:1.2rem; font-size:1rem; opacity:0.6;"><a href="mailto:dragon.exe@atomicmail.io">★ Email Dragon! ★</a></div>
 </div>
@@ -87,15 +213,30 @@
     <div class="host-quote orange">"Chef if ya nasty."</div>
     <p class="host-bio">Master of Mixology. Tarot Reader. Cocktail Alchemist. Serving drinks and reading your soul to filth.</p>
     <div class="eyebrow" style="margin-top:1.2rem;">Signature Segment</div>
-    <div class="tag-row">
-      <span class="tag" style="font-weight:600;" title="The closing segment — final thoughts, a parting toast, and whatever wisdom he's decided to drop on the way out.">★ Last Call</span>
+    <div class="segment-acc-list">
+      <details class="segment-acc">
+        <summary style="font-weight:600;" title="The closing segment — final thoughts, a parting toast, and whatever wisdom he's decided to drop on the way out.">★ Last Call</summary>
+        <p class="segment-acc-desc">The closing segment — final thoughts, a parting toast, and whatever wisdom he's decided to drop on the way out.</p>
+      </details>
     </div>
     <div class="eyebrow" style="margin-top:0.8rem; font-size:0.65rem; opacity:0.6;">Plus 1 Random Pull From:</div>
-    <div class="tag-row">
-      <span class="tag" title="A featured cocktail segment — crafted live, with the 'why' behind every ingredient choice.">The Intoxicologist's Pour</span>
-      <span class="tag" title="A tarot pull paired with the cocktail of the episode, tying the card's meaning to what's being poured.">The Intoxicologist's Reading</span>
-      <span class="tag" title="A technical deep-dive into the craft — the science of getting fancy-drunk.">Cocktail Chemistry</span>
-      <span class="tag" title="A mellower, wind-down segment with slower pacing and moodier picks.">Sunset Sessions</span>
+    <div class="segment-acc-list">
+      <details class="segment-acc">
+        <summary title="A featured cocktail segment — crafted live, with the 'why' behind every ingredient choice.">The Intoxicologist's Pour</summary>
+        <p class="segment-acc-desc">A featured cocktail segment — crafted live, with the 'why' behind every ingredient choice.</p>
+      </details>
+      <details class="segment-acc">
+        <summary title="A tarot pull paired with the cocktail of the episode, tying the card's meaning to what's being poured.">The Intoxicologist's Reading</summary>
+        <p class="segment-acc-desc">A tarot pull paired with the cocktail of the episode, tying the card's meaning to what's being poured.</p>
+      </details>
+      <details class="segment-acc">
+        <summary title="A technical deep-dive into the craft — the science of getting fancy-drunk.">Cocktail Chemistry</summary>
+        <p class="segment-acc-desc">A technical deep-dive into the craft — the science of getting fancy-drunk.</p>
+      </details>
+      <details class="segment-acc">
+        <summary title="A mellower, wind-down segment with slower pacing and moodier picks.">Sunset Sessions</summary>
+        <p class="segment-acc-desc">A mellower, wind-down segment with slower pacing and moodier picks.</p>
+      </details>
 </div>
 <div class="Email" style="margin-top:1.2rem; font-size:1rem; opacity:0.6;"><a href="mailto:intoxicologist.exe@atomicmail.io">★ Email The Intoxicologist! ★</a></div>
 </div>
