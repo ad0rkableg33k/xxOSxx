@@ -231,7 +231,7 @@
         <label>Date</label>
         <input type="date" id="epDate">
       </div>
-      <p style="font-size:0.72rem; color:var(--text-dim); margin:-0.4rem 0 0.8rem;">Random pulls: BabyyBAT &amp; Drag0n get 2 each · The Intoxicologist gets 1</p>
+      <p style="font-size:0.72rem; color:var(--text-dim); margin:-0.4rem 0 0.8rem;">Random pulls: BabyyBAT &amp; Drag0n get 2 each · The Intoxicologist gets 1 · The Bigfoot has just his one static pick for now</p>
       <div class="row">
         <button id="rollBtn">🎲 Roll New Lineup</button>
         <button id="saveBtn" class="save">💾 Save This Lineup</button>
@@ -255,6 +255,7 @@
           <option value="Dragon">Dragon</option>
           <option value="BabyyBAT">BabyyBAT</option>
           <option value="Intoxicologist">The Intoxicologist</option>
+          <option value="Bigfoot">The Bigfoot</option>
           <option value="guest">Guest</option>
         </select>
       </div>
@@ -413,6 +414,9 @@ const SEGMENTS = {
     ["Last Call", "The closing segment — final thoughts, a parting toast, and whatever wisdom he's decided to drop on the way out."],
     ["Cocktail Chemistry", "A technical deep-dive into the craft — the science of getting fancy-drunk."],
     ["Sunset Sessions", "A mellower, wind-down segment with slower pacing and moodier picks."]
+  ]},
+  bigfoot: { label: "The Bigfoot", accent: "#4dfff2", list: [
+    ["Bigfoot's Pick", "Bigfoot weighs in on whatever's happening — his pick, no explanation needed."]
   ]}
 };
 
@@ -420,14 +424,16 @@ const SEGMENTS = {
 const STATIC_SEGMENTS = {
   bat: "Bat Signal Reading",
   dragon: "Dragon's Hoard",
-  intox: "Last Call"
+  intox: "Last Call",
+  bigfoot: "Bigfoot's Pick"
 };
 
 /* How many random (non-static) segments each host gets per episode */
 const RANDOM_COUNTS = {
   bat: 2,
   dragon: 2,
-  intox: 1
+  intox: 1,
+  bigfoot: 0
 };
 
 let currentLineup = null;

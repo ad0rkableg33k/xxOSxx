@@ -247,6 +247,8 @@ a { color: var(--pink-bright); text-decoration: none; }
 .card.pink::before { color: var(--pink); text-shadow: 0 0 8px var(--pink); }
 .card.orange { border-color: var(--orange); box-shadow: 0 0 26px var(--orange-glow), inset 0 0 30px rgba(255,157,10,0.05); }
 .card.orange::before { color: var(--orange); text-shadow: 0 0 8px var(--orange); }
+.card.cyan { border-color: var(--cyan); box-shadow: 0 0 26px rgba(77,255,242,0.5), inset 0 0 30px rgba(77,255,242,0.05); }
+.card.cyan::before { color: var(--cyan); text-shadow: 0 0 8px var(--cyan); }
 
 .card .avatar-placeholder {
   height: 180px;
@@ -273,6 +275,7 @@ a { color: var(--pink-bright); text-decoration: none; }
 }
 .card.pink .avatar-photo { border-color: var(--pink); box-shadow: 0 0 22px var(--pink-glow); }
 .card.orange .avatar-photo { border-color: var(--orange); box-shadow: 0 0 22px var(--orange-glow); }
+.card.cyan .avatar-photo { border-color: var(--cyan); box-shadow: 0 0 22px rgba(77,255,242,0.5); }
 
 .card .emoji-row { font-size: 1.3rem; margin-top: 1rem; }
 
@@ -285,6 +288,7 @@ a { color: var(--pink-bright); text-decoration: none; }
 .host-name.purple { color: var(--purple); text-shadow: 0 0 14px var(--purple-glow); }
 .host-name.pink { color: var(--pink-bright); text-shadow: 0 0 14px var(--pink-glow); }
 .host-name.orange { color: var(--orange); text-shadow: 0 0 14px var(--orange-glow); }
+.host-name.cyan { color: var(--cyan); text-shadow: 0 0 14px rgba(77,255,242,0.5); }
 
 .host-role {
   font-size: 0.78rem;
@@ -307,6 +311,7 @@ a { color: var(--pink-bright); text-decoration: none; }
 .host-quote.purple { color: var(--purple); }
 .host-quote.pink { color: var(--pink-bright); }
 .host-quote.orange { color: var(--orange); }
+.host-quote.cyan { color: var(--cyan); }
 
 .host-bio { color: var(--text-light); opacity: 0.9; }
 
